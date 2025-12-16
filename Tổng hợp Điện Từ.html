@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ôn Thi Vật Lý Đại Cương 2</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- CẤU HÌNH MATHJAX CHUẨN (Fix lỗi font và căn chỉnh) -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            options: {
+                ignoreHtmlClass: 'tex2jax_ignore',
+                processHtmlClass: 'tex2jax_process'
+            },
+            chtml: {
+                scale: 1.1, 
+                matchFontHeight: false,
+                displayAlign: 'center'
+            }
+        };
+    </script>
+    <!-- Load MathJax -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <style>
+        /* --- 1. FIX FONT CHỮ TOÀN DIỆN --- */
+        body {
+            font-family: "Times New Roman", Times, serif !important;
+            background-color: #f8f9fa;
+        }
+        
+        /* Đồng bộ font cho cả input, button */
+        input, button, select, textarea {
+            font-family: "Times New Roman", Times, serif !important;
+        }
+
+        /* Class riêng cho nội dung câu hỏi */
+        .exam-text {
+            font-family: "Times New Roman", Times, serif;
+            font-size: 1.25rem; /* Tăng nhẹ size (khoảng 20px) cho dễ đọc */
+            line-height: 1.6;
+            color: #1a202c; 
+            text-align: justify; 
+        }
+
+        /* Căn chỉnh MathJax Inline để không bị lệch dòng */
+        mjx-container[jax="CHTML"][display="true"] {
+            margin: 1em 0 !important;
+        }
+        
+        mjx-container.MathJax {
+            outline: 0 !important;
+        }
+        
+        /* Fix lỗi hiển thị công thức bị nhảy dòng hoặc font lạ */
+        .mjx-chtml {
+            font-family: inherit !important;
+        }
+
+        /* --- UI Styles --- */
+        .question-card {
+            transition: all 0.3s ease;
+            scroll-margin-top: 150px;
+        }
+        .question-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        /* --- 2. STYLE CHO Ô ĐÁP ÁN (NGAY NGẮN) --- */
+        .option-box {
+            height: 100%; /* Đảm bảo chiều cao bằng nhau */
+            display: flex;
+            align-items: center; /* Căn giữa nội dung theo chiều dọc */
+            padding: 12px 16px;
+            background-color: #f9fafb; /* gray-50 */
+            border: 1px solid #e5e7eb; /* gray-200 */
+            border-radius: 6px;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .option-box:hover {
+            background-color: #eff6ff; /* blue-50 */
+            border-color: #bfdbfe; /* blue-200 */
+        }
+
+        .answer-box {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        .answer-box.show {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Navigation Chips */
+        .nav-chip {
+            transition: all 0.2s;
+            cursor: pointer;
+            user-select: none;
+            font-family: "Times New Roman", Times, serif; /* Đồng bộ font */
+        }
+        .nav-chip:hover {
+            transform: scale(1.05);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .modal {
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+        }
+        
+        .topic-header {
+            scroll-margin-top: 120px; 
+            font-family: "Times New Roman", Times, serif;
+        }
+
+        /* --- 3. LOGO VÀ FOOTER --- */
+        /* Logo style mới: Rõ ràng hơn, nằm trong flow flexbox */
+        .header-logo {
+            height: 150px; /* Chiều cao cố định */
+            width: auto;
+            object-fit: contain;
+            background-color: white; /* Nền trắng để nổi bật trên nền xanh */
+            padding: 5px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* Footer Styles */
+        .sc-contact-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            z-index: 9999; 
+            background: rgba(17, 24, 39, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-family: Arial, sans-serif; /* Giữ Arial cho footer cho hiện đại */
+            padding: 10px 0;
+        }
+        .sc-footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .sc-left-content {
+            color: #9ca3af;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .sc-brand-name {
+            font-weight: bold;
+            background: linear-gradient(to right, #60a5fa, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .sc-right-content {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .sc-social-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            color: white;
+            font-size: 18px;
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+        .sc-social-btn:hover {
+            transform: translateY(-3px) scale(1.1);
+        }
+        /* Tooltip */
+        .sc-tooltip {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: white;
+            color: #333;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        .sc-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: white transparent transparent transparent;
+        }
+        .sc-social-btn:hover .sc-tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+        /* Button Colors */
+        .btn-phone { background: linear-gradient(135deg, #4ade80, #15803d); }
+        .btn-facebook { background: linear-gradient(135deg, #18ACFE, #0163E0); }
+        .btn-tiktok { background: linear-gradient(135deg, #374151, #000000); border: 1px solid #4b5563; }
+        .btn-instagram { background: linear-gradient(45deg, #833ab4, #fd1d1d, #fcb045); }
+        
+        @media (max-width: 600px) {
+            .sc-footer-container { flex-direction: column-reverse; gap: 10px; }
+            .header-logo { height: 60px; } /* Logo nhỏ hơn trên mobile */
+        }
+    </style>
+</head>
+<body class="text-gray-900 antialiased min-h-screen flex flex-col pb-20"> <!-- pb-20 để tránh footer che nội dung -->
+
+    <!-- Header (Đã chỉnh sửa logo) -->
+    <header class="bg-blue-900 text-white shadow-lg sticky top-0 z-40">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between gap-4">
+            <!-- Logo đặt ở đây, có background trắng cho rõ -->
+            <a href="/" class="flex-shrink-0">
+                <img src="https://upload.wikimedia.org/wikipedia/vi/0/0e/Logo_MTA_new.png" alt="Logo MTA" class="header-logo">
+            </a>
+
+            <!-- Tiêu đề và Đồng hồ -->
+            <div class="flex-grow flex flex-col md:flex-row md:items-center md:justify-between text-right md:text-left">
+                <h1 class="text-lg md:text-2xl font-bold flex items-center justify-end md:justify-start gap-2 mb-1 md:mb-0" style="font-family: 'Times New Roman', serif;">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 md:h-8 md:w-8 text-yellow-400 hidden md:block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                    </svg>
+                    <span>Ôn Thi Vật Lý Đại Cương 2</span>
+                </h1>
+                <div id="real-time-clock" class="text-xs md:text-base font-mono bg-blue-800 px-3 py-1 rounded shadow-inner inline-block">
+                    --:--:--
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8 flex-grow">
+        <div class="mb-6 text-center">
+            <!-- Navigation Chips -->
+            <div class="flex flex-wrap justify-center gap-2"> 
+                <button onclick="scrollToTopic(1)" class="nav-chip px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-base font-bold border border-blue-200">1. Điện trường tĩnh</button>
+                <button onclick="scrollToTopic(2)" class="nav-chip px-3 py-1 bg-green-100 text-green-800 rounded-full text-base font-bold border border-green-200">2. Vật dẫn & Tụ điện</button>
+                <button onclick="scrollToTopic(3)" class="nav-chip px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-base font-bold border border-purple-200">3. Điện môi</button>
+                <button onclick="scrollToTopic(4)" class="nav-chip px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-base font-bold border border-yellow-200">4. Từ trường</button>
+                <button onclick="scrollToTopic(5)" class="nav-chip px-3 py-1 bg-red-100 text-red-800 rounded-full text-base font-bold border border-red-200">5. Cảm ứng điện từ</button>
+                <button onclick="scrollToTopic(6)" class="nav-chip px-3 py-1 bg-gray-200 text-gray-800 rounded-full text-base font-bold border border-gray-300">6. Trường điện từ</button>
+            </div>
+        </div>
+
+        <div id="questions-container" class="space-y-6 max-w-5xl mx-auto">
+            <!-- Questions injected by JS -->
+        </div>
+    </main>
+
+    <!-- Countdown Popup -->
+    <div id="countdown-modal" class="modal fixed inset-0 z-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-2xl p-6 md:p-8 max-w-md w-full mx-4 relative border-l-8 border-blue-600 animate-bounce-in">
+            <button onclick="closeModal('countdown-modal')" class="absolute top-2 right-2 text-gray-400 hover:text-red-500 focus:outline-none">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+            <h3 class="text-2xl font-bold text-blue-800 mb-2" style="font-family: 'Times New Roman', serif;">Sắp đến giờ G! ⏳</h3>
+            <p class="text-gray-600 mb-4" style="font-family: 'Times New Roman', serif;">Mục tiêu: 14h00 ngày 19/12/2025</p>
+            <div class="bg-blue-50 p-4 rounded-lg text-center mb-4">
+                <span id="countdown-timer" class="text-xl md:text-2xl font-bold text-blue-900 font-mono block">
+                    Đang tính toán...
+                </span>
+                <span class="text-sm text-blue-600">Thời gian còn lại</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sleep Popup -->
+    <div id="sleep-modal" class="modal fixed inset-0 z-50 hidden flex items-center justify-center">
+        <div class="bg-indigo-900 text-white rounded-lg shadow-2xl p-6 md:p-8 max-w-md w-full mx-4 relative border-2 border-indigo-400">
+            <div class="text-center">
+                <div class="text-6xl mb-4">😴</div>
+                <h3 class="text-2xl font-bold mb-2">Muộn rồi đi ngủ thôi!</h3>
+                <p class="text-indigo-200 text-lg">Giữ sức khỏe tốt để thi.</p>
+                <p class="mt-4 text-sm text-indigo-300 italic">(Thông báo này sẽ tự tắt sau 4h00 sáng)</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="sc-contact-footer">
+        <div class="sc-footer-container">
+            <div class="sc-left-content">
+                <span>Design by <span class="sc-brand-name">Sơn Cris</span></span>
+            </div>
+            <div class="sc-right-content">
+                <a href="tel:0327208690" class="sc-social-btn btn-phone">
+                    <i class="fas fa-phone-alt"></i>
+                    <span class="sc-tooltip">0327.208.690</span>
+                </a>
+                <a href="https://web.facebook.com/sonsadboiz.12" target="_blank" class="sc-social-btn btn-facebook">
+                    <i class="fab fa-facebook-f"></i>
+                    <span class="sc-tooltip">Facebook</span>
+                </a>
+                <a href="https://www.tiktok.com/@chubodoihaybuon" target="_blank" class="sc-social-btn btn-tiktok">
+                    <i class="fab fa-tiktok"></i>
+                    <span class="sc-tooltip">TikTok</span>
+                </a>
+                <a href="https://www.instagram.com/son_cris3012/?__pwa=1" target="_blank" class="sc-social-btn btn-instagram">
+                    <i class="fab fa-instagram"></i>
+                    <span class="sc-tooltip">Instagram</span>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Script -->
+    <script>
+        // --- DATA SOURCE ---
+        const questionsData = [
+            // 1: ĐIỆN TRƯỜNG TĨNH
+            {
+                id: "CD1-1",
+                topic: "1. Điện trường tĩnh",
+                content: "Hai quả cầu nhỏ giống nhau tích điện, điện tích tương ứng là $q_{1}$ và $q_{2}$ đặt trong không khí. Khi khoảng cách giữa chúng là $r_{1}=4cm$ thì chúng hút nhau với lực $F_{1}=27.10^{-3}N.$ Cho hai quả cầu tiếp xúc với nhau rồi tách chúng ra đến khoảng cách $r_{2}=3cm$ thì chúng đẩy nhau với lực $F_{2}=10^{-3}N$ Biết $k=9.10^{9}Nm^{2}/C^{2}$ $\\epsilon=1$ Điện tích của các quả cầu lúc đầu là:",
+                options: [
+                    "A. $q_{1}=8.10^{-4}C$ và $q_{2}=6.10^{-8}C$",
+                    "B. $q_{1}=\\pm8.10^{-6}C$ và $q_{2}=\\pm6.10^{-6}C$",
+                    "C. $q_{1}=\\pm6.10^{-8}C$ và $q_{2}=\\mp8.10^{-8}C$",
+                    "D. $q_{1}=6.10^{-8}C$ và $q_{2}=8.10^{-8}C$"
+                ],
+                correct: "C",
+                explanation: "Sử dụng định luật Coulomb cho trường hợp trước và sau khi tiếp xúc. <br>Trước khi tiếp xúc: lực hút nên $q_1, q_2$ trái dấu. <br>Sau khi tiếp xúc: điện tích chia đều $q'_1 = q'_2 = (q_1+q_2)/2$, đẩy nhau. <br>Giải hệ phương trình tìm được đáp án C."
+            },
+            {
+                id: "CD1-2",
+                topic: "1. Điện trường tĩnh",
+                content: "Một thanh kim loại mảnh mang điện tích $q=2.10^{-7}(C)$ được phân bố đều trên thanh. Gọi E là giá trị cường độ điện trường tại một điểm cách đều hai đầu thanh một khoảng $R=400(cm)$ và cách trung điểm của thanh $R_{0}=20(cm)$. Coi như điện tích được phân bố đều trên thanh.",
+                options: ["A. $1300(V/m)$", "B. $1500(V/m)$", "C. $2245(V/m)$", "D. $2700(V/m)$"],
+                correct: "C",
+                explanation: "Áp dụng công thức tính cường độ điện trường của thanh tích điện phân bố đều tại điểm nằm trên đường trung trực hoặc sử dụng tích phân điện trường $dE$. Đáp án đúng là C."
+            },
+            {
+                id: "CD1-3",
+                topic: "1. Điện trường tĩnh",
+                content: "Hai điện tích điểm $q_{1}=-q_{2}=4.10^{-8}C$ đặt cách nhau $d=6$ cm trong không khí. Nếu cho điện tích $q_{1}$ dịch chuyển xa $q_{2}$ thêm một khoảng $a=3$ cm thì công của lực điện trong dịch chuyển đó là (cho $k=1/(4\\pi\\epsilon_{0})=9.10^{9}Nm^{2}/C^{2})$:",
+                options: ["A. $-8.10^{-5}J$", "B. $-9.10^{-5}J$", "C. $-8,5.10^{-5}J$", "D. $-9,409.10^{-5}J$"],
+                correct: "A",
+                explanation: "Công của lực điện trường: $A = k|q_1 q_2|(\\frac{1}{r_1} - \\frac{1}{r_2})$. <br>Vì hai điện tích trái dấu hút nhau, đưa ra xa tốn công ngoại lực, công lực điện sinh ra là âm. Tính toán ra $-8.10^{-5}J$."
+            },
+            {
+                id: "CD1-4",
+                topic: "1. Điện trường tĩnh",
+                content: "Một vòng tròn làm bằng một dây dẫn mảnh bán kính $a=7cm$ mang một điện tích q và được phân bố đều trên dây. Trị số cường độ điện trường tại một điểm trên trục đối xứng của vòng dây và cách tâm vòng dây một khoảng $b=14cm$ là $E=3,22.10^{4}V/m$. Hỏi điện tích q bằng giá trị nào dưới đây?",
+                options: ["A. $4,62.10^{-4}C$", "B. $9,8.10^{-4}C$", "C. $5.10^{-4}C$", "D. $10.10^{-4}C$"],
+                correct: "B",
+                explanation: "Công thức điện trường trên trục vòng dây: $E = \\frac{k|q|h}{(R^2+h^2)^{3/2}}$. Thay số và tính ngược lại q. Đáp án B."
+            },
+            {
+                id: "CD1-5",
+                topic: "1. Điện trường tĩnh",
+                content: "Tại các đỉnh của tam giác đều ABC cạnh a có 3 điện tích điểm q. Cần phải đặt tại tâm giác điện tích $q_0$ bằng bao nhiêu để toàn hệ ở trạng thái cân bằng lực:",
+                options: ["A. $q_{0}=-q/\\sqrt{3}$", "B. $q_{0}=-q\\sqrt{3}/3$", "C. $q_{0}=-q/\\sqrt{3}$", "D. $q_{0}=-q\\sqrt{3}$"],
+                correct: "B",
+                explanation: "Lực tác dụng lên mỗi điện tích q ở đỉnh gồm lực đẩy từ 2 đỉnh còn lại và lực hút từ tâm. Để cân bằng, hợp lực phải bằng 0. Tính toán vector lực cho kết quả $q_0 = -q\\frac{\\sqrt{3}}{3}$."
+            },
+            {
+                id: "CD1-6",
+                topic: "1. Điện trường tĩnh",
+                content: "Hai điện tích điểm $q_{1}=2.10^{-8}C$, $q_{2}=-8.10^{-8}C$ đặt tại hai điểm A, B cách nhau một khoảng $a=12cm$ trong không khí. Điểm M có cường độ điện trường bằng 0 cách A là:",
+                options: ["A. 12 cm", "B. 6 cm", "C. 4 cm", "D. 3 cm"],
+                correct: "A",
+                explanation: "Vì $q_1, q_2$ trái dấu, điểm cân bằng nằm ngoài khoảng AB và gần điện tích có độ lớn nhỏ hơn (gần A). <br>$k|q_1|/r_1^2 = k|q_2|/r_2^2$ với $r_2 = r_1 + 12$. Giải ra $r_1=12$ cm."
+            },
+
+            // 2: VẬT DẪN VÀ TỤ ĐIỆN
+            {
+                id: "CD2-1",
+                topic: "2. Vật dẫn và tụ điện",
+                content: "Một tụ điện phẳng có diện tích bản cực là S, khoảng cách giữa hai bản là d, nối với nguồn hiệu điện thế ngoài không đổi. Người ta đưa vào giữa hai bản cực của tụ điện một tấm kim loại dày $d'<d.$ Điện tích của tụ điện sẽ:",
+                options: ["A. không đổi", "B. tăng lên rồi sau đó trở lại giá trị ban đầu", "C. giảm đi", "D. tăng lên"],
+                correct: "D",
+                explanation: "Khi đưa tấm kim loại vào, khoảng cách hiệu dụng d giảm ($d_{eff} = d - d'$). <br>Vì $C = \\epsilon S / d_{eff}$, d giảm nên C tăng. <br>U không đổi, nên $Q=CU$ sẽ tăng lên."
+            },
+            {
+                id: "CD2-2",
+                topic: "2. Vật dẫn và tụ điện",
+                content: "Hai quả cầu kim loại 1 và 2 bán kính lần lượt là $R_{1}=4cm$ và $R_{2}=9cm$, được nối với nhau bằng một sợi dây dẫn điện dài. Tổng điện tích $Q=13.10^{-8}C$. Điện tích của quả cầu 1 có giá trị nào sau đây:",
+                options: ["A. $1,09.10^{-8}C$", "B. $3,03.10^{-8}C$", "C. $2,06.10^{-8}C$", "D. $4.10^{-8}C$"],
+                correct: "D",
+                explanation: "Khi nối dây, điện thế hai quả cầu bằng nhau: $k q_1/R_1 = k q_2/R_2 \\Rightarrow q_1/R_1 = q_2/R_2$. <br>Mặt khác $q_1 + q_2 = Q$. Giải hệ ta được $q_1 = 4.10^{-8}C$."
+            },
+            {
+                id: "CD2-3",
+                topic: "2. Vật dẫn và tụ điện",
+                content: "Cho một tụ điện trụ, bán kính tiết diện mặt trụ trong và mặt trụ ngoài lần lượt là $R_{1}=1cm$ và $R_{2}=2cm$ hiệu điện thế giữa hai mặt trụ là $U=400V$. Cường độ điện trường tại điểm cách trục đối xứng của tụ một khoảng $r=1,5cm$ có giá trị nào dưới đây:",
+                options: ["A. 38,472 kV/m", "B. 39,462 kV/m", "C. 40,452 kV/m", "D. 41,442 kV/m"],
+                correct: "A",
+                explanation: "Điện trường trong tụ trụ: $E(r) = \\frac{U}{r \\ln(R_2/R_1)}$. <br>Thay số: $E = 400 / (0.015 \\cdot \\ln(2)) \\approx 38472 V/m$."
+            },
+            {
+                id: "CD2-4",
+                topic: "2. Vật dẫn và tụ điện",
+                content: "Một tụ điện phẳng, $S=120cm^{2}$, $d=0,5cm$, $\\epsilon=2$. Tích điện đến $U=300V$. Nối hai bản tụ với điện trở $R=100\\Omega$. Nhiệt lượng toả ra trên điện trở khi tụ phóng hết điện là:",
+                options: ["A. $1,814.10^{-6}J$ (Theo đề) / $1,9.10^{-6}J$ (Tính toán)", "B. $1,964.10^{-6}J$", "C. $1,764.10^{-6}J$", "D. $1,914.10^{-6}J$"],
+                correct: "A",
+                explanation: "Nhiệt lượng tỏa ra bằng năng lượng tụ: $W = \\frac{1}{2}CU^2$. $C = \\frac{\\epsilon \\epsilon_0 S}{d}$. <br>Tính toán ra xấp xỉ $1,9.10^{-6}J$. Chọn A theo đáp án gốc."
+            },
+            {
+                id: "CD2-5",
+                topic: "2. Vật dẫn và tụ điện",
+                content: "Một tụ phẳng $S=100cm^{2}$, $d=0,5cm$, không khí. $U=300V$. Lực hút tĩnh điện giữa hai bản có giá trị nào dưới đây:",
+                options: ["A. $2,575.10^{-4}N$", "B. $1,595.10^{-4}N$", "C. $1,125.10^{-4}N$", "D. $1,105.10^{-4}N$"],
+                correct: "B",
+                explanation: "Lực hút giữa hai bản tụ: $F = \\frac{QE}{2} = \\frac{CU \\cdot U/d}{2} = \\frac{\\epsilon_0 S U^2}{2d^2}$. Thay số vào công thức."
+            },
+            {
+                id: "CD2-6",
+                topic: "2. Vật dẫn và tụ điện",
+                content: "Các bản cực của tụ điện phẳng không khí ($\\epsilon=1$) diện tích S hút nhau do tích điện trái dấu q. Lực này tạo nên một áp suất 'tĩnh điện'. Áp suất này bằng:",
+                options: ["A. $q^{2}/(\\epsilon_{0}S)$", "B. $1/2.q^{2}/(\\epsilon_{0}S^{2})$", "C. $q^{2}/(\\epsilon_{0}S^{2})$", "D. $1/2.q^{2}/(\\epsilon_{0}S)$"],
+                correct: "B",
+                explanation: "Lực $F = \\frac{q^2}{2\\epsilon_0 S}$. Áp suất $p = \\frac{F}{S} = \\frac{q^2}{2\\epsilon_0 S^2}$."
+            },
+            {
+                id: "CD2-7",
+                topic: "2. Vật dẫn và tụ điện",
+                content: "Một pin, một tụ điện C, một điện kế số không G, một khóa đóng mở K được nối tiếp thành mạch kín. Khi đóng khóa K thì kim điện kế sẽ:",
+                options: ["A. Quay một góc rồi trở về số không", "B. Quay đi quay lại quanh số không", "C. Quay một góc rồi đứng yên ở đó", "D. Đứng yên"],
+                correct: "A",
+                explanation: "Khi đóng mạch, dòng điện nạp cho tụ chạy qua điện kế làm kim quay. Khi tụ đầy, dòng bằng 0, kim trở về số 0."
+            },
+             {
+                id: "CD2-8",
+                topic: "2. Vật dẫn và tụ điện",
+                content: "Cho một tụ điện cầu có bán kính hai bản là $R_{1}=1,2cm$ và $R_{2}=3,8cm$. Cường độ điện trường ở một điểm cách tâm tụ điện một khoảng $r=3cm$ có trị số là $4,44.10^{4}V/m$. Hỏi hiệu điện thế giữa hai bản của tụ bằng giá trị nào dưới đây:",
+                options: ["A. 2289,1 V", "B. 2310,5 V", "C. 2257 V", "D. 2278,4 V"],
+                correct: "D",
+                explanation: "Sử dụng công thức liên hệ E và Q, sau đó tính U của tụ cầu: $U = kQ(\\frac{1}{R_1} - \\frac{1}{R_2})$. Tìm Q từ E tại r=3cm."
+            },
+            {
+                id: "CD2-9",
+                topic: "2. Vật dẫn và tụ điện",
+                content: "Một tụ điện phẳng không khí được tích điện Q. Ngắt tụ khỏi nguồn và đưa khối điện môi $\\epsilon=6$ lấp đầy. Câu nào dưới đây là SAI:",
+                options: ["A. Điện tích ở hai bản cực không đổi", "B. Trị số của vector điện cảm giảm đi 6 lần", "C. Cường độ điện trường trong tụ điện giảm đi 6 lần", "D. Hiệu điện thế giữa hai bản cực giảm đi 6 lần"],
+                correct: "B",
+                explanation: "Ngắt nguồn thì Q không đổi (A đúng). E giảm epsilon lần (C đúng). U giảm epsilon lần (D đúng). <br>Vector điện cảm D chỉ phụ thuộc điện tích tự do, không phụ thuộc môi trường nên D không đổi. Vậy B sai."
+            },
+            {
+                id: "CD2-10",
+                topic: "2. Vật dẫn và tụ điện",
+                content: "Một tụ có điện dung $C=0,5\\mu F,$ được tích một điện lượng $Q=3.10^{-8}C$. Nối tụ với điện trở $R=15\\Omega$. Nhiệt lượng toả ra trên R khi tụ phóng hết điện là:",
+                options: ["A. $8,06.10^{-10}J$", "B. $8,53.10^{-10}J$", "C. $9.10^{-10}J$", "D. $7,59.10^{-10}J$"],
+                correct: "C",
+                explanation: "Nhiệt lượng tỏa ra bằng năng lượng tụ điện ban đầu: $W = Q^2 / (2C)$. <br>Thay số: $(3.10^{-8})^2 / (2 \\cdot 0,5.10^{-6}) = 9.10^{-10} J$."
+            },
+
+            // 3: ĐIỆN MÔI
+            {
+                id: "CD3-1",
+                topic: "3. Điện môi",
+                content: "Một khối điện môi tâm O bán kính R tích điện đều theo thể tích. Một điểm M cách tâm O một khoảng $r$. Kết luận nào sau đây đúng:",
+                options: [
+                    "A. $E\\sim1/r$, $U\\sim1/r^{2}$ với $r>R$",
+                    "B. $E\\sim r$, $U\\sim r^{2}$ với $r<R$",
+                    "C. $E=0$, $U=const$ với $r>R$",
+                    "D. $E\\sim 1/r^2, U\\sim 1/r$ với $r<R$" // Đã sửa nội dung lỗi hiển thị
+                ],
+                correct: "B",
+                explanation: "Trong lòng khối cầu tích điện đều theo thể tích, cường độ điện trường tỷ lệ thuận với bán kính r ($E \\sim r$). Thế năng biến thiên bậc 2."
+            },
+            {
+                id: "CD3-2",
+                topic: "3. Điện môi",
+                content: "Một tấm điện môi dày $d=0,02cm$ đặt vào giữa hai bản tụ phẳng. $U=390V$. Mật độ điện tích liên kết $\\sigma'=7,09.10^{-5}C/m^{2}$. Giá trị hằng số điện môi là:",
+                options: ["A. 4,764", "B. 5,274", "C. 5,104", "D. 5,614"],
+                correct: "C",
+                explanation: "Sử dụng các hệ thức liên hệ trong điện môi để giải ngược ra epsilon."
+            },
+            {
+                id: "CD3-3",
+                topic: "3. Điện môi",
+                content: "Ngắt tụ ra khỏi nguồn và đưa vào giữa hai bản cực một tấm điện môi phẳng độ dày $b<d$ hằng số điện môi 6. Điện dung của tụ điện mới sẽ:",
+                options: ["A. không đổi", "B. tăng lên", "C. tăng lên rồi giảm đi", "D. giảm đi"],
+                correct: "B",
+                explanation: "Việc đưa điện môi vào làm giảm điện trường trong khoảng đó, làm giảm hiệu điện thế U giữa hai bản (vì Q không đổi). <br>Vì $C=Q/U$, U giảm nên C tăng."
+            },
+             {
+                id: "CD3-4",
+                topic: "3. Điện môi",
+                content: "Một quả cầu đồng tính $R=5cm$. Tích điện $Q=2,782.10^{-6}C$. Cường độ điện trường tại $r=2,4cm$ (trong lòng quả cầu):",
+                options: ["A. $4,807.10^{6}V/m$", "B. $4,598.10^{6}V/m$", "C. $5,098.10^{6}V/m$", "D. $4,898.10^{6}V/m$"],
+                correct: "A",
+                explanation: "Áp dụng định lý Gauss cho điểm trong lòng cầu tích điện khối: $E = \\frac{k|Q|r}{R^3}$. Thay số tính toán ra đáp án A."
+            },
+            {
+                id: "CD3-5",
+                topic: "3. Điện môi",
+                content: "Hai mặt phẳng song song vô hạn cách nhau 12cm... Mật độ điện tích liên kết xuất hiện trên mặt điện môi bằng:",
+                options: ["A. $7,752.10^{-8}C/m^{2}$", "B. $8,331.10^{-8}C/m^{2}$", "C. $9,489.10^{-8}C/m^{2}$", "D. $6,594.10^{-8}C/m^{2}$"],
+                correct: "A",
+                explanation: "Sử dụng công thức mật độ điện tích liên kết: $\\sigma' = \\sigma_{td} (\\frac{\\epsilon-1}{\\epsilon})$."
+            },
+
+            // 4: TỪ TRƯỜNG
+            {
+                id: "CD4-1",
+                topic: "4. Từ trường",
+                content: "Một khung dây dẫn bẹt hình chữ nhật có các cạnh $a=3cm,b=4cm$ gồm $N=60$ vòng dây. Dòng điện $I=1mA$. Trị số của vector cảm ứng từ tại tâm khung dây:",
+                options: ["A. $0,22.10^{-5}T$", "B. $0,24.10^{-5}T$", "C. $0,2.10^{-5}T$", "D. $0,14.10^{-5}T$"],
+                correct: "B",
+                explanation: "Cảm ứng từ tại tâm khung chữ nhật là tổng hợp của 4 đoạn dây thẳng. Dùng công thức Biot-Savart cho đoạn dây thẳng hữu hạn. Nhân N vòng."
+            },
+            {
+                id: "CD4-2",
+                topic: "4. Từ trường",
+                content: "Khung dây chữ nhật $a=10cm, b=16cm, I=9A$. Cường độ từ trường H tại tâm:",
+                options: ["A. 69,758 A/m", "B. 67,566 A/m", "C. 71,948 A/m", "D. 60,998 A/m"],
+                correct: "A",
+                explanation: "Tính H tương tự như B nhưng bỏ $\\mu_0$. Tổng hợp từ 4 cạnh."
+            },
+            {
+                id: "CD4-3",
+                topic: "4. Từ trường",
+                content: "Cuộn dây 5 vòng tròn $R=10cm, I=8A$. Cảm ứng từ tại điểm trên trục cách tâm $h=10cm$:",
+                options: ["A. $8,886.10^{-5}T$", "B. $8,786.10^{-5}T$", "C. $8,936.10^{-5}T$", "D. $8,736.10^{-5}T$"],
+                correct: "A",
+                explanation: "Công thức: $B = N \\frac{\\mu_0 I R^2}{2(R^2+h^2)^{3/2}}$."
+            },
+            {
+                id: "CD4-4",
+                topic: "4. Từ trường",
+                content: "Tam giác đều cạnh $a=50cm, I=3,14A$. Cường độ từ trường tại tâm:",
+                options: ["A. 6,085 A/m", "B. 8,025 A/m", "C. 7,055 A/m", "D. 8,995 A/m"],
+                correct: "D",
+                explanation: "Tổng hợp từ 3 cạnh của tam giác đều. Khoảng cách từ tâm đến cạnh là $a\\sqrt{3}/6$."
+            },
+            {
+                id: "CD4-5",
+                topic: "4. Từ trường",
+                content: "Hai vòng dây tròn tâm trùng nhau, trục vuông góc. $R_1=3cm, I_1=4A; R_2=5cm, I_2=9A$. Cường độ từ trường tại tâm:",
+                options: ["A. $1,21.10^{2}A/m$", "B. $1,09.10^{2}A/m$", "C. $1,12.10^{2}A/m$", "D. $1,06.10^{2}A/m$"],
+                correct: "C",
+                explanation: "Hai vector H vuông góc nhau. $H = \\sqrt{H_1^2 + H_2^2}$. Với $H = I/(2R)$."
+            },
+            {
+                id: "CD4-6",
+                topic: "4. Từ trường",
+                content: "Vòng dây tròn $R=9cm, I=4A$. B tại điểm trên trục cách tâm $h=10cm$:",
+                options: ["A. $0,642.10^{-5}T$", "B. $0,836.10^{-5}T$", "C. $1,127.10^{-5}T$", "D. $0,739.10^{-5}T$"],
+                correct: "B",
+                explanation: "Áp dụng công thức $B = \\frac{\\mu_0 I R^2}{2(R^2+h^2)^{3/2}}$."
+            },
+            {
+                id: "CD4-7",
+                topic: "4. Từ trường",
+                content: "Dây dẫn uốn thành góc vuông, $I=11A$. Cường độ từ trường tại M trên phân giác ngoài, cách đỉnh 10cm:",
+                options: ["A. 7,052 A/m", "B. 6,852 A/m", "C. 7,852 A/m", "D. 7,252 A/m"],
+                correct: "A",
+                explanation: "Tổng hợp vector từ trường từ 2 nửa dòng điện thẳng dài vô hạn."
+            },
+            {
+                id: "CD4-8",
+                topic: "4. Từ trường",
+                content: "Dây dẫn uốn góc vuông, $I=20A$. H tại M trên phân giác, cách đỉnh 10cm:",
+                options: ["A. 82,76 A/m", "B. 74,88 A/m", "C. 76,85 A/m", "D. 80,79 A/m"],
+                correct: "D",
+                explanation: "Tương tự câu trên nhưng điểm M có thể nằm trong góc vuông hoặc cấu hình khác, đáp án D."
+            },
+             {
+                id: "CD4-9",
+                topic: "4. Từ trường",
+                content: "Đa giác đều n cạnh nội tiếp đường tròn bán kính R, dòng I. Cường độ từ trường H tại tâm:",
+                options: [
+                    "A. $H=(n.I/2\\pi R)\\sin(\\pi/n)$", 
+                    "B. $H=(n.I/2\\pi R)\\tan(\\pi/n)$", 
+                    "C. $H=(n.I/2\\pi R)\\cos(\\pi/n)$", 
+                    "D. $H=(n.I/4\\pi R)\\tan(\\pi/n)$"
+                ],
+                correct: "B",
+                explanation: "Công thức tổng quát cho đa giác đều n cạnh."
+            },
+             {
+                id: "CD4-10",
+                topic: "4. Từ trường",
+                content: "Dây dẫn trụ đặc dài vô hạn $I=11A$, đường kính 2cm. H tại $r=0,4cm$ (trong dây):",
+                options: ["A. 69,03 A/m", "B. 70,03 A/m", "C. 73,03 A/m", "D. 68,03 A/m"],
+                correct: "B",
+                explanation: "Trong lòng dây dẫn: $H = \\frac{I \cdot r}{2\\pi R^2}$."
+            },
+             {
+                id: "CD4-11",
+                topic: "4. Từ trường",
+                content: "Vòng dây $R=16cm, I=5,5A$. Kim nam châm lệch 45 độ. Cảm ứng từ Trái Đất:",
+                options: ["A. $21,587.10^{-6}T$", "B. $20,587.10^{-6}T$", "C. $23,587.10^{-6}T$", "D. $24,587.10^{-6}T$"],
+                correct: "A",
+                explanation: "Dùng quy tắc tang: $B_{day} = B_{dat} \\tan(\\alpha)$. Tính $B_{day}$ rồi suy ra $B_{dat}$."
+            },
+             {
+                id: "CD4-12",
+                topic: "4. Từ trường",
+                content: "Dây dẫn uốn góc vuông, $I=13A$, OM=10cm trên phân giác. Cảm ứng từ tại M:",
+                options: ["A. $5,65.10^{-5}T$", "B. $2,5.10^{-5}T$", "C. $2,45.10^{-5}T$", "D. $2,6.10^{-5}T$"],
+                correct: "A",
+                explanation: "Tổng hợp B từ hai nửa dòng điện."
+            },
+             {
+                id: "CD4-13",
+                topic: "4. Từ trường",
+                content: "Ba dòng điện song song $I_1=I_2=I, I_3=2I$. $AB=BC=5cm$. Điểm M có từ trường bằng 0 cách A:",
+                options: ["A. 3,5 cm", "B. 3,3 cm", "C. 3,4 cm", "D. 3,2 cm"],
+                correct: "B",
+                explanation: "Viết phương trình cân bằng từ trường: $B_1 + B_2 = B_3$ (về độ lớn) và xét hướng."
+            },
+            {
+                id: "CD4-14",
+                topic: "4. Từ trường",
+                content: "Đoạn dây AB, I=8A. H tại M trên trung trực cách 7cm, nhìn AB góc 60 độ:",
+                options: ["A. 9,095 A/m", "B. 14,405 A/m", "C. 7,325 A/m", "D. 12,635 A/m"],
+                correct: "A",
+                explanation: "Dùng công thức đoạn dây thẳng: $H = \\frac{I}{4\\pi r}(\\sin\\theta_1 + \\sin\\theta_2)$."
+            },
+             {
+                id: "CD4-15",
+                topic: "4. Từ trường",
+                content: "Ống dây thẳng, d=0.9mm, I=0.1A. H trong lòng = 1000 A/m. Số lớp dây:",
+                options: ["A. 6 lớp", "B. 7 lớp", "C. 9 lớp", "D. 12 lớp"],
+                correct: "C",
+                explanation: "$H = n \cdot I$ (với n là số vòng/mét). Với nhiều lớp, mật độ vòng tăng lên."
+            },
+            {
+                id: "CD4-16",
+                topic: "4. Từ trường",
+                content: "Ống dây hình xuyến lõi sắt $\\mu_1=150, I_1=3A$. Thay bằng $\\mu_2=100$. Để B như cũ thì I bằng:",
+                options: ["A. 5,1 A", "B. 4,3 A", "C. 4,1 A", "D. 4,5 A"],
+                correct: "D",
+                explanation: "$B = \\mu \\mu_0 n I$. Để B không đổi thì $\\mu_1 I_1 = \\mu_2 I_2$. Suy ra $I_2 = 150*3/100 = 4.5A$."
+            },
+            {
+                id: "CD4-17",
+                topic: "4. Từ trường",
+                content: "Hai vòng dây tròn $R=3cm$ vuông góc nhau. $I_1=I_2=6A$. H tại tâm:",
+                options: ["A. 135,63 A/m", "B. 153 A/m", "C. 124,05 A/m", "D. 141,42 A/m"],
+                correct: "D",
+                explanation: "$H = \\sqrt{H_1^2 + H_2^2} = \\sqrt{2} \\cdot I/(2R)$."
+            },
+            {
+                id: "CD4-18",
+                topic: "4. Từ trường",
+                content: "Vòng dây $R=2cm, I=2A$ vuông góc với $B=0,2T$. Công quay về vị trí song song đường sức:",
+                options: ["A. $18,966.10^{-4}J$", "B. $11,966.10^{-4}J$", "C. $5,026.10^{-4}J$", "D. $25,936.10^{-4}J$"],
+                correct: "C",
+                explanation: "Công $A = \\Delta W = Pm(\\cos\\alpha_1 - \\cos\\alpha_2)$ hoặc $A = I \\Delta \\Phi$."
+            },
+             {
+                id: "CD4-19",
+                topic: "4. Từ trường",
+                content: "Năng lượng từ trường ống dây chân không $L_0 I_0^2/2$. Đưa lõi sắt từ vào, năng lượng thay đổi:",
+                options: ["A. Tăng", "B. Không đổi", "C. Tăng $\\mu$ lần", "D. Giảm"],
+                correct: "C",
+                explanation: "Vì $L = \\mu L_0$ nên năng lượng tăng $\\mu$ lần (nếu I được duy trì)."
+            },
+            {
+                id: "CD4-20",
+                topic: "4. Từ trường",
+                content: "Vòng dây $d=20cm, B=5.10^{-3}T$. Quay 90 độ. Công:",
+                options: ["A. $8,739.10^{-4}J$", "B. $8,639.10^{-4}J$", "C. $789.10^{-4}J$", "D. $8,869.10^{-4}J$"],
+                correct: "B",
+                explanation: "Áp dụng công thức công lực từ quay khung dây."
+            },
+             {
+                id: "CD4-21",
+                topic: "4. Từ trường",
+                content: "Hai dây song song cách r, cùng chiều. Công dịch chuyển 1m dây ra 2r là $5,5.10^{-5}J/m$. I bằng:",
+                options: ["A. 14,008 A", "B. 21,888 A", "C. 23,858 A", "D. 19,918 A"],
+                correct: "D",
+                explanation: "Công tương tác giữa hai dây song song tích phân từ r đến 2r."
+            },
+            {
+                id: "CD4-22",
+                topic: "4. Từ trường",
+                content: "Dây thẳng $I_1=10A$, khung vuông $I_2=2,5A$. Công quay khung 180 độ:",
+                options: ["A. $0,809.10^{-7}J$", "B. $1,009.10^{-7}J$", "C. $1,109.10^{-7}J$", "D. $0,909.10^{-7}J$"],
+                correct: "C",
+                explanation: "Công thay đổi từ thông qua khung dây."
+            },
+            {
+                id: "CD4-23",
+                topic: "4. Từ trường",
+                content: "Ống dây $l=56cm, N=500$. Mật độ năng lượng $w=0,1J/m^3$. Cường độ I:",
+                options: ["A. 0,447 A", "B. 0,487 A", "C. 0,527 A", "D. 0,567 A"],
+                correct: "A",
+                explanation: "$w = \\frac{1}{2} \\mu_0 H^2$. Tính H từ w, sau đó $I = H \\cdot l / N$."
+            },
+            {
+                id: "CD4-24",
+                topic: "4. Từ trường",
+                content: "Ống dây quấn sát nhau, d=6mm. Mật độ năng lượng $w=0,1J/m^3$. I bằng:",
+                options: ["A. 2,494 A", "B. 2,244 A", "C. 2,394 A", "D. 2,444 A"],
+                correct: "C",
+                explanation: "Số vòng trên mét $n = 1/d$. $H = nI = I/d$. Từ w suy ra H, rồi suy ra I."
+            },
+            {
+                id: "CD4-25",
+                topic: "4. Từ trường",
+                content: "Electron $U=1200V$, bay vào từ trường $B=1,19.10^{-3}T$ vuông góc. Bán kính quỹ đạo:",
+                options: ["A. $98,179.10^{-3}m$", "B. $113,72.10^{-3}m$", "C. $90,409.10^{-3}m$", "D. $74,869.10^{-3}m$"],
+                correct: "A",
+                explanation: "Động năng $mv^2/2 = eU$. Lực Lorentz đóng vai trò lực hướng tâm $evB = mv^2/R$. Suy ra R."
+            },
+            {
+                id: "CD4-26",
+                topic: "4. Từ trường",
+                content: "Electron $B=2.10^{-6}T$, quỹ đạo tròn $R=5cm$. Động năng:",
+                options: ["A. $13,966.10^{-23}J$", "B. $14,066.10^{-23}J$", "C. $14,116.10^{-23}J$", "D. $14,216.10^{-23}J$"],
+                correct: "B",
+                explanation: "Tính v từ công thức bán kính, sau đó tính động năng."
+            },
+            {
+                id: "CD4-27",
+                topic: "4. Từ trường",
+                content: "Electron bay vào từ trường đều vuông góc. Nhận xét KHÔNG đúng:",
+                options: ["A. Chu kỳ quay tỷ lệ nghịch với vận tốc", "B. Quỹ đạo là đường tròn", "C. Bán kính tỷ lệ thuận với vận tốc", "D. Chu kỳ không phụ thuộc vận tốc"],
+                correct: "A",
+                explanation: "Chu kỳ $T = 2\\pi m / (eB)$, không phụ thuộc vào v. Nên A sai."
+            },
+             {
+                id: "CD4-28",
+                topic: "4. Từ trường",
+                content: "Điện tử $v=4.10^7 m/s, B=10^{-3}T$. Gia tốc pháp tuyến:",
+                options: ["A. $7.10^{15}m/s^2$", "B. 0", "C. $3,5.10^{15}m/s^2$", "D. $10,5.10^{15}m/s^2$"],
+                correct: "A",
+                explanation: "$a_n = F/m = evB/m$."
+            },
+            {
+                id: "CD4-29",
+                topic: "4. Từ trường",
+                content: "Electron $U=2kV, B=1,3.10^{-2}T$, góc 30 độ. Bước đường đinh ốc:",
+                options: ["A. 7,313 cm", "B. 7,813 cm", "C. 6,813 cm", "D. 6,313 cm"],
+                correct: "D",
+                explanation: "Bước xoắn $h = v_{\\parallel} T = (v \\cos\\alpha) \\cdot (2\\pi m / eB)$."
+            },
+            {
+                id: "CD4-30",
+                topic: "4. Từ trường",
+                content: "Hạt $q=1,6.10^{-19}C, B=1,7.10^{-3}T$. Thời gian bay một vòng:",
+                options: ["A. $1,925.10^{-8}s$", "B. $2,102.10^{-8}s$", "C. $2,456.10^{-8}s$", "D. $1,571.10^{-8}s$"],
+                correct: "B",
+                explanation: "Chu kỳ $T = 2\\pi m / (qB)$."
+            },
+             {
+                id: "CD4-31",
+                topic: "4. Từ trường",
+                content: "Điện trường E dọc z, từ trường dọc x. Quỹ đạo điện tích thẳng khi:",
+                options: ["A. $v=EB/m$", "B. $v=mEB$", "C. $v=E/B$", "D. $v=\\sqrt{2}EB/m$"],
+                correct: "C",
+                explanation: "Để quỹ đạo thẳng thì lực điện và lực Lorentz phải cân bằng nhau: $qE = qvB \\Rightarrow v = E/B$."
+            },
+
+            // 5: CẢM ỨNG ĐIỆN TỪ
+            {
+                id: "CD5-1",
+                topic: "5. Cảm ứng điện từ",
+                content: "Ống dây $N=130, B=0,2T$, góc 60 độ, $S=1cm^2$. Từ trường giảm về 0 trong 0,1s. Suất điện động:",
+                options: ["A. 12 mV", "B. 12,5 mV", "C. 14,5 mV", "D. 13 mV"],
+                correct: "D",
+                explanation: "Suất điện động $e_c = N |\\Delta \\Phi / \\Delta t| = N S \\cos\\alpha |\\Delta B / \\Delta t|$."
+            },
+            {
+                id: "CD5-2",
+                topic: "5. Cảm ứng điện từ",
+                content: "Ống dây $N=200, B=0,2T, \\omega=6$ vòng/s, $S=120cm^2$. Suất điện động cực đại:",
+                options: ["A. 21,086 V", "B. 16,086 V", "C. 18,086 V", "D. 17,086 V"],
+                correct: "C",
+                explanation: "$E_0 = NBS\\omega$. Chú ý đổi đơn vị vòng/s ra rad/s."
+            },
+            {
+                id: "CD5-3",
+                topic: "5. Cảm ứng điện từ",
+                content: "Hình chiều dòng điện cảm ứng... Khẳng định nào đúng:",
+                options: ["A. Hình a sai, b sai", "B. Hình a đúng, b sai", "C. Hình a sai, b đúng", "D. Hình a đúng, b đúng"],
+                correct: "C",
+                explanation: "Theo đáp án gốc."
+            },
+            {
+                id: "CD5-4",
+                topic: "5. Cảm ứng điện từ",
+                content: "Đĩa kim loại $R=25cm$ quay 1400 vòng/phút. Hiệu điện thế tâm và mép đĩa:",
+                options: ["A. $4,316.10^{-9}V$", "B. $2,816.10^{-9}V$", "C. $3,816.10^{-9}V$", "D. $2,316.10^{-9}V$"],
+                correct: "C",
+                explanation: "Lực ly tâm tác dụng lên electron đóng vai trò lực lạ."
+            },
+            {
+                id: "CD5-5",
+                topic: "5. Cảm ứng điện từ",
+                content: "Thanh đồng dài l quay. Hiệu điện thế giữa đầu trong và điểm giữa thanh:",
+                options: ["A. 4U/9", "B. 3U/8", "C. U/2", "D. U/8"],
+                correct: "B",
+                explanation: "Tích phân lực quán tính ly tâm từ 0 đến l/2 so với từ 0 đến l."
+            },
+             {
+                id: "CD5-6",
+                topic: "Cảm ứng điện từ",
+                content: "Thanh $l=1,2m$ quay trong B, 120 vòng/phút. Trục quay cách đầu 25cm. Hiệu điện thế hai đầu:",
+                options: ["A. 0,264 V", "B. 0,322 V", "C. 0,351 V", "D. 0,235 V"],
+                correct: "C",
+                explanation: "Hiệu điện thế hai đầu thanh quay cắt từ trường: $e = \\frac{1}{2}B\\omega(R_2^2 - R_1^2)$ (xét dấu)."
+            },
+            {
+                id: "CD5-7",
+                topic: "Cảm ứng điện từ",
+                content: "Máy bay v, $l=15m, B=0,5.10^{-4}T, U=0,25V$. Vận tốc v:",
+                options: ["A. 282,33 m/s", "B. 367,33 m/s", "C. 350,33 m/s", "D. 333,33 m/s"],
+                correct: "D",
+                explanation: "$U = Blv \\Rightarrow v = U/(Bl)$."
+            },
+             {
+                id: "CD5-8",
+                topic: "Cảm ứng điện từ",
+                content: "Vòng dây kín chuyển động từ (1) đến (2). Lần 2 chậm gấp đôi lần 1. So sánh:",
+                options: [
+                    "A. $\\xi_{1}=\\xi_{2}; q_{1}=2q_{2}$", 
+                    "B. $\\xi_{1}=2\\xi_{2}; q_{1}=2q_{2}$", 
+                    "C. $\\xi_{1}=\\xi_{2}; q_{1}=q_{2}$", 
+                    "D. $\\xi_{1}=2\\xi_{2}; q_{1}=q_{2}$"
+                ],
+                correct: "D",
+                explanation: "Suất điện động tỷ lệ với tốc độ biến thiên từ thông (nhanh hơn thì e lớn hơn). Điện lượng $q = \\Delta \\Phi / R$ chỉ phụ thuộc biến thiên từ thông, không phụ thuộc thời gian."
+            },
+            
+            // 6: TRƯỜNG ĐIỆN TỪ
+            {
+                id: "CD6-1",
+                topic: "6. Trường điện từ",
+                content: "Thanh natri $\\sigma=0,23.10^{8}$. Dòng dẫn gấp 54 triệu lần dòng dịch. Chu kì:",
+                options: ["A. $132,7.10^{-12}s$", "B. $133,7.10^{-12}s$", "C. $130,7.10^{-12}s$", "D. $131,7.10^{-12}s$"],
+                correct: "C",
+                explanation: "Tỷ số biên độ dòng dẫn và dòng dịch liên quan đến tần số."
+            },
+             {
+                id: "CD6-2",
+                topic: "6. Trường điện từ",
+                content: "Tụ phẳng $E=E_0\\sin(\\omega t)$, $f=50Hz$. Dòng điện dịch cực đại:",
+                options: ["A. $2,601.10^{-5}A$", "B. $1,804.10^{-5}A$", "C. $1,398.10^{-5}A$", "D. $5,789.10^{-5}A$"],
+                correct: "C",
+                explanation: "Tính đạo hàm điện cảm D theo thời gian để ra mật độ dòng dịch, nhân diện tích."
+            },
+        ];
+
+        // --- RENDER LOGIC (Đã cập nhật để dùng class option-box mới) ---
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = ''; 
+            let currentTopic = "";
+            let topicCount = 0; 
+
+            questionsData.forEach((q, index) => {
+                if (q.topic !== currentTopic) {
+                    currentTopic = q.topic;
+                    topicCount++; 
+                    
+                    const topicHeader = document.createElement('h2');
+                    topicHeader.id = `topic-${topicCount}`; 
+                    topicHeader.className = "topic-header text-2xl font-bold text-blue-900 mt-10 mb-4 border-b-2 border-blue-200 pb-2 transition-colors duration-500";
+                    topicHeader.textContent = currentTopic;
+                    container.appendChild(topicHeader);
+                }
+
+                const card = document.createElement('div');
+                card.className = "question-card bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden cursor-pointer";
+                card.onclick = () => toggleAnswer(q.id);
+
+                const body = document.createElement('div');
+                body.className = "p-6";
+                body.innerHTML = `
+                    <div class="flex items-start gap-4">
+                        <span class="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-blue-600 text-white rounded-full font-bold text-sm font-sans">${index + 1}</span>
+                        <div class="flex-grow">
+                            <p class="mb-4 exam-text">${q.content}</p>
+                            <!-- Grid 2 cột cho các đáp án, sử dụng class option-box -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                ${q.options.map(opt => `<div class="option-box exam-text">${opt}</div>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                const footer = document.createElement('div');
+                footer.id = `ans-${q.id}`;
+                footer.className = "answer-box bg-green-50 border-t border-green-100 p-6";
+                footer.innerHTML = `
+                    <div class="flex items-start gap-3">
+                        <div class="mt-1"><i class="fas fa-check-circle text-green-600 text-xl"></i></div>
+                        <div>
+                            <p class="font-bold text-green-800 text-lg mb-1 font-sans">Đáp án đúng: ${q.correct}</p>
+                            <div class="text-gray-900 bg-white p-4 rounded border border-green-200 shadow-sm mt-2">
+                                <span class="font-semibold text-green-700 block mb-1 font-sans">Giải thích chi tiết:</span>
+                                <span class="exam-text text-base">${q.explanation}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                card.appendChild(body);
+                card.appendChild(footer);
+                container.appendChild(card);
+            });
+
+            if (window.MathJax) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        // --- NAVIGATION & UTILS ---
+        function scrollToTopic(topicIndex) {
+            const element = document.getElementById(`topic-${topicIndex}`);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                element.classList.add('bg-yellow-100');
+                setTimeout(() => element.classList.remove('bg-yellow-100'), 1500);
+            }
+        }
+
+        function toggleAnswer(id) {
+            const ansBox = document.getElementById(`ans-${id}`);
+            if (ansBox.style.display === "block") {
+                ansBox.style.display = "none";
+                ansBox.classList.remove("show");
+            } else {
+                ansBox.style.display = "block";
+                setTimeout(() => ansBox.classList.add("show"), 10);
+            }
+        }
+
+        function updateClock() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            document.getElementById('real-time-clock').textContent = now.toLocaleDateString('vi-VN', options);
+        }
+
+        // --- COUNTDOWN LOGIC ---
+        const targetDate = new Date('2025-12-19T14:00:00');
+
+        function updateCountdown() {
+            const now = new Date();
+            const diff = targetDate - now;
+
+            if (diff <= 0) {
+                document.getElementById('countdown-timer').textContent = "Đã đến giờ thi!";
+                return;
+            }
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('countdown-timer').textContent = 
+                `${days} ngày ${hours.toString().padStart(2,'0')} giờ ${minutes.toString().padStart(2,'0')} phút ${seconds.toString().padStart(2,'0')} giây`;
+        }
+
+        function checkSleepTime() {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const isLateNight = (hours === 23 && minutes >= 30);
+            const isEarlyMorning = (hours >= 0 && hours < 4);
+
+            const modal = document.getElementById('sleep-modal');
+            if (isLateNight || isEarlyMorning) {
+                if (modal.classList.contains('hidden')) modal.classList.remove('hidden');
+            } else {
+                if (!modal.classList.contains('hidden')) modal.classList.add('hidden');
+            }
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        // --- INIT ---
+        window.onload = function() {
+            renderQuestions();
+            document.getElementById('countdown-modal').classList.remove('hidden');
+
+            setInterval(updateClock, 1000);
+            setInterval(updateCountdown, 1000);
+            setInterval(checkSleepTime, 60000); 
+
+            updateClock();
+            updateCountdown();
+            checkSleepTime();
+        };
+    </script>
+</body>
+</html>
